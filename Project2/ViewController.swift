@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var countries = [String]()
     var correctAnswer = 0
     var score = 0
+    var questionNum = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +40,19 @@ class ViewController: UIViewController {
         button2.setImage(UIImage(named:countries[1]), for: .normal)
         button3.setImage(UIImage(named:countries[2]), for: .normal)
         correctAnswer = Int.random(in: 0...2)
+      
         title = countries[correctAnswer].uppercased() + " " + String(score)
+        if(questionNum == 10){
+            let ac = UIAlertController(title: "Results", message: "You have answered 10 quesions with score: \(score)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Finish", style: .default, handler: {_ in
+                self.score = 0
+                self.questionNum = 0
+                self.correctAnswer = Int.random(in: 0...2)
+                self.title = self.countries[self.correctAnswer].uppercased() + " " + String(self.score)
+            }))
+            present(ac,animated: true)
+        }
+        questionNum += 1
     }
 
     @IBAction func buttonTapped(_ sender: UIButton) {
