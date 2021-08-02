@@ -63,6 +63,11 @@ class ViewController: UIViewController {
         } else {
             title = "Wrong"
             score -= 1
+            let ac = UIAlertController(title: "Incorrect", message: "Wrong! That’s the flag of \(countries[sender.tag])", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestions))
+            present(ac,animated: true)
+            return
+          
         }
         
         let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
