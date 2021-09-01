@@ -11,16 +11,19 @@ class ViewController: UIViewController {
     @IBOutlet var button1: UIButton!
     @IBOutlet var button2: UIButton!
     @IBOutlet var button3: UIButton!
+    @IBOutlet var highestLabel: UILabel!
     
+    let defaults = UserDefaults.standard
     var countries = [String]()
     var correctAnswer = 0
     var score = 0
     var questionNum = 0
+    var highestScore = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         countries += ["estonia", "france", "germany", "ireland", "italy", "monaco", "nigeria", "poland", "russia", "spain", "uk", "us"]
-        
+        highestLabel.text = "Highest Score: \(defaults.integer(forKey: "highestScore"))"
         
         button1.layer.borderWidth = 1
         button2.layer.borderWidth = 1
@@ -32,6 +35,10 @@ class ViewController: UIViewController {
         
         askQuestions()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+       
+       // defaults.set(highestScore, forKey: "highestScore")
+       
+        
     }
     
     func askQuestions(action: UIAlertAction! = nil){
@@ -43,8 +50,10 @@ class ViewController: UIViewController {
         correctAnswer = Int.random(in: 0...2)
       
         title = countries[correctAnswer].uppercased() + " " + String(score)
+       
         if(questionNum == 10){
             let ac = UIAlertController(title: "Results", message: "You have answered 10 quesions with score: \(score)", preferredStyle: .alert)
+           
             ac.addAction(UIAlertAction(title: "Finish", style: .default, handler: {_ in
                 self.score = 0
                 self.questionNum = 0
@@ -69,6 +78,17 @@ class ViewController: UIViewController {
             present(ac,animated: true)
             return
           
+        }
+        
+        if score > defaults.integer(forKey: "highestScore") {
+            highestScore = score
+            defaults.set(highestScore, forKey: "highestScore")
+            highestLabel.text = "Highest Score: \(defaults.integer(forKey: "highestScore"))"
+            let ac = UIAlertController(title: "Congrats", message: "New best score", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default))
+            present(ac, animated: true)
+            
+            
         }
         
         let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
