@@ -66,19 +66,26 @@ class ViewController: UIViewController {
     }
 
     @IBAction func buttonTapped(_ sender: UIButton) {
-        
-        if sender.tag == correctAnswer{
-            title = "Correct"
-            score += 1
-        } else {
-            title = "Wrong"
-            score -= 1
-            let ac = UIAlertController(title: "Incorrect", message: "Wrong! That’s the flag of \(countries[sender.tag])", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestions))
-            present(ac,animated: true)
-            return
-          
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: []) {
+            sender.transform = CGAffineTransform(scaleX: 0.70, y: 0.70)
+        } completion: { finished in
+            sender.transform = CGAffineTransform(scaleX: 1, y: 1)
+            if sender.tag == self.correctAnswer{
+                self.title = "Correct"
+                self.score += 1
+            } else {
+                self.title = "Wrong"
+                self.score -= 1
+                let ac = UIAlertController(title: "Incorrect", message: "Wrong! That’s the flag of \(self.countries[sender.tag])", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: self.askQuestions))
+                self.present(ac,animated: true)
+                return
+              
+            }
         }
+
+        
+        
         
         if score > defaults.integer(forKey: "highestScore") {
             highestScore = score
