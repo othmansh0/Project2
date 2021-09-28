@@ -4,7 +4,7 @@
 //
 //  Created by othman shahrouri on 8/2/21.
 //
-
+import UserNotifications
 import UIKit
 
 class ViewController: UIViewController {
@@ -22,6 +22,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        registerNotifications()
         countries += ["estonia", "france", "germany", "ireland", "italy", "monaco", "nigeria", "poland", "russia", "spain", "uk", "us"]
         highestLabel.text = "Highest Score: \(defaults.integer(forKey: "highestScore"))"
         
@@ -111,6 +112,31 @@ class ViewController: UIViewController {
         present(vc,animated: true)
     }
     
+    func scheduleNotifications() {
+        let center = UNUserNotificationCenter.current()
+        
+        
+        
+    }
+    
+    
+     func registerNotifications() {
+        let center = UNUserNotificationCenter.current()
+            //request an alert+badge+sound
+        center.requestAuthorization(options: [.alert,.badge,.sound]) { granted,error in
+            if granted {
+                print("yay")
+            }
+            else {
+                print("shit")
+                print(error)
+            }
+            
+        }
+        
+    }
+    
 }
 
  
+
