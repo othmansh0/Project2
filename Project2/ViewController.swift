@@ -7,7 +7,7 @@
 import UserNotifications
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,UNUserNotificationCenterDelegate {
     @IBOutlet var button1: UIButton!
     @IBOutlet var button2: UIButton!
     @IBOutlet var button3: UIButton!
@@ -38,7 +38,7 @@ class ViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
        
        // defaults.set(highestScore, forKey: "highestScore")
-       
+       scheduleNotifications()
         
     }
     
@@ -113,7 +113,38 @@ class ViewController: UIViewController {
     }
     
     func scheduleNotifications() {
+        registerCategories()
+
         let center = UNUserNotificationCenter.current()
+        //create content for notification
+        let content = UNMutableNotificationContent()
+        content.title = "Play a game"
+        content.body = "We've missed you,come play with us"
+        //you can attach custom actions by specifying categoryIdentifier
+        content.categoryIdentifier = "alarm"
+         
+        content.sound = .default
+        
+       
+       
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = 8
+        dateComponents.minute = 50
+       // let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        
+        //interval trigger
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60, repeats: true)
+
+        
+       
+        //request ties content and trigger together
+        //it has unique identifier a string you create
+        //it lets you update or remove notifications programmatically
+        // for ex :existing notification to be updated with new information, rather than have multiple notifications from the same app over time
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        center.add(request)
         
         
         
@@ -122,18 +153,32 @@ class ViewController: UIViewController {
     
      func registerNotifications() {
         let center = UNUserNotificationCenter.current()
+        center.delegate = self
             //request an alert+badge+sound
         center.requestAuthorization(options: [.alert,.badge,.sound]) { granted,error in
             if granted {
                 print("yay")
-            }
-            else {
+            } else {
                 print("shit")
                 print(error)
             }
-            
         }
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        center.removeAllPendingNotificationRequests()
+        scheduleNotifications()
         
+        
+        
+    }
+    
+    func registerCategories() {
+        let center = UNUserNotificationCenter.current()
+        let show = UNNotificationAction(identifier: "show", title: "Tell me more...", options: .foreground)
+        let category = UNNotificationCategory(identifier: "alarm", actions: [show], intentIdentifiers: [], options: [])
+        
+        center.setNotificationCategories([category])
     }
     
 }
